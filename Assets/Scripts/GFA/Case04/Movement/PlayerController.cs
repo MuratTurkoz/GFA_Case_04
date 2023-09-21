@@ -1,7 +1,9 @@
+using GFA.Case04.Mediators;
 using GFA.Case04.Movement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 namespace GFA.Case04.Movement
@@ -9,32 +11,16 @@ namespace GFA.Case04.Movement
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
-        public float Velocity { get { return _velocity; } set { _velocity = value; } }
-        private float _velocity = 5f;
-        private Vector3 _movement;
-        public Vector3 Movement { get { return _movement; } set { _movement = value; } }
-        private bool _isJumped;
-        public bool IsJumped
-        {
-            get { return _isJumped; }
-            set { _isJumped = value; }
-        }
-        private bool _isRolled;
-        public bool IsRolled => _isRolled;
+
+        [SerializeField] private PlayerMediator _playerMediator;
         private CharacterController _characterController;
-
-        //private CharacterController _characterController;
-
         private void Awake()
         {
             _characterController = GetComponent<CharacterController>();
         }
-
-        private void Update()
+        public void MoveHandle()
         {
-
-                _characterController.SimpleMove(_movement * _velocity);
-            
+            _characterController.Move((_playerMediator.Movement + new Vector3(0, _playerMediator.JumpForce, 0)) * _playerMediator.Velocity * Time.deltaTime);
         }
     }
 }

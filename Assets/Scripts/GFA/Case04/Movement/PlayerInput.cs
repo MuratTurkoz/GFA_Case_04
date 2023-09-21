@@ -1,4 +1,5 @@
 using GFA.Case04.Input;
+using GFA.Case04.Mediators;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,8 @@ namespace GFA.Case04.Movement
     {
         private GameInput _gameInput;
         private Vector2 _position;
-        [SerializeField] private PlayerController _playerController;
-
+        private float _jumpForce;  
+        [SerializeField] private PlayerMediator _playerMediator;
         private void Awake()
         {
             _gameInput = new GameInput();
@@ -29,14 +30,29 @@ namespace GFA.Case04.Movement
 
         private void OnJump(InputAction.CallbackContext context)
         {
-
+            _playerMediator.IsJumped = true;   
         }
 
         public void OnMove()
         {
             _position = _gameInput.Player.Movement.ReadValue<Vector2>();
-            _playerController.Movement = new Vector3(_position.x, 0, _position.y);
+            if (_position == Vector2.zero)
+            {
+                _playerMediator.Behaviour = MoveBehaviour.Idle;
+            }
+            else
+            {
+                _playerMediator.Behaviour = MoveBehaviour.Run;
+                _playerMediator.Movement = new Vector3(_position.x,0, _position.y);
+            }
+            Debug.Log(_position);
 
+        }
+        private void Update()
+        {
+            Debug.Log(_playerMediator.Movement);
+            OnMove();
+           
         }
 
     }
