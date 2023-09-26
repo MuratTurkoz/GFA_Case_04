@@ -64,6 +64,24 @@ namespace GFA.Case04.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""327a2883-a40c-4d5c-953e-cd51fb1105d3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""25d1db32-a0ed-455d-936e-31bfce6f2467"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -154,6 +172,28 @@ namespace GFA.Case04.Input
                     ""action"": ""Rolling"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6559a44a-4cee-4cf0-9dac-f1c278e36c1e"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""03ff4cf4-8103-4263-91f8-4f36e7af0d8f"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -183,6 +223,8 @@ namespace GFA.Case04.Input
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
             m_Player_Rolling = m_Player.FindAction("Rolling", throwIfNotFound: true);
+            m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+            m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -248,6 +290,8 @@ namespace GFA.Case04.Input
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_Crouch;
         private readonly InputAction m_Player_Rolling;
+        private readonly InputAction m_Player_Look;
+        private readonly InputAction m_Player_PointerPosition;
         public struct PlayerActions
         {
             private @GameInput m_Wrapper;
@@ -256,6 +300,8 @@ namespace GFA.Case04.Input
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
             public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
             public InputAction @Rolling => m_Wrapper.m_Player_Rolling;
+            public InputAction @Look => m_Wrapper.m_Player_Look;
+            public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -277,6 +323,12 @@ namespace GFA.Case04.Input
                 @Rolling.started += instance.OnRolling;
                 @Rolling.performed += instance.OnRolling;
                 @Rolling.canceled += instance.OnRolling;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @PointerPosition.started += instance.OnPointerPosition;
+                @PointerPosition.performed += instance.OnPointerPosition;
+                @PointerPosition.canceled += instance.OnPointerPosition;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -293,6 +345,12 @@ namespace GFA.Case04.Input
                 @Rolling.started -= instance.OnRolling;
                 @Rolling.performed -= instance.OnRolling;
                 @Rolling.canceled -= instance.OnRolling;
+                @Look.started -= instance.OnLook;
+                @Look.performed -= instance.OnLook;
+                @Look.canceled -= instance.OnLook;
+                @PointerPosition.started -= instance.OnPointerPosition;
+                @PointerPosition.performed -= instance.OnPointerPosition;
+                @PointerPosition.canceled -= instance.OnPointerPosition;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -325,6 +383,8 @@ namespace GFA.Case04.Input
             void OnJump(InputAction.CallbackContext context);
             void OnCrouch(InputAction.CallbackContext context);
             void OnRolling(InputAction.CallbackContext context);
+            void OnLook(InputAction.CallbackContext context);
+            void OnPointerPosition(InputAction.CallbackContext context);
         }
     }
 }
