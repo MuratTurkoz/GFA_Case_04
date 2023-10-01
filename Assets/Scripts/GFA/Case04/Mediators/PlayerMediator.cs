@@ -18,24 +18,25 @@ namespace GFA.Case04.Mediators
         public float Velocity { get { return _velocity; } set { _velocity = value; } }
         private float _rotation;
         public float Rotation { get { return _rotation; } set { _rotation = value; } }
-
+        [SerializeField]
         private Vector3 _movement;
         public Vector3 Movement { get { return _movement; } set { _movement = value; } }
 
         private bool _isCrouch;
         public bool IsCrouch { get { return _isCrouch; } set { _isCrouch = value; } }
-
+        [SerializeField]
         private bool _isJumped;
         public bool IsJumped { get { return _isJumped; } set { _isJumped = value; } }
 
         private bool _isRolled;
         public bool IsRolled { get { return _isRolled; } set { _isRolled = value; } }
-
+        [SerializeField]
         private bool _isGrounded;
         public bool IsGrounded { get { return _isGrounded; } set { _isGrounded = value; } }
 
         private float _jumpForce = 0;
         public float JumpForce { get { return _jumpForce; } set { _jumpForce = value; } }
+        [SerializeField]
         private Vector2 _lookPosition;
         public Vector2 LookPosition { get { return _lookPosition; } set { _lookPosition = value; } }
         private Vector2 _pointerPosition;
@@ -54,15 +55,20 @@ namespace GFA.Case04.Mediators
 
         private void Update()
         {
+            Debug.Log(_playerInput.GetMouseDelta().normalized);
             OnMove();
             OnJumped();
+        }
+        private void LateUpdate()
+        {
+            
             Onlook();
         }
 
 
         private void OnMove()
         {
-            Movement = _playerInput.GetPlayerMovement();
+            //Movement = _playerInput.GetPlayerMovement()* _playerInput.GetMouseDelta().normalized;
             _playerController.MoveHandle();
             _anim.SetFloat("MoveZ", _movement.normalized.magnitude);
 

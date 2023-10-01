@@ -622,8 +622,6 @@ GameObject:
   - component: {fileID: 555615204}
   - component: {fileID: 555615203}
   - component: {fileID: 555615206}
-  - component: {fileID: 555615207}
-  - component: {fileID: 555615208}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -718,6 +716,10 @@ MonoBehaviour:
   _anim: {fileID: 555615206}
   _playerInput: {fileID: 555615204}
   _playerController: {fileID: 555615203}
+  _movement: {x: 0, y: 0, z: 0}
+  _isJumped: 0
+  _isGrounded: 0
+  _lookPosition: {x: 0, y: 0}
 --- !u!95 &555615206
 Animator:
   serializedVersion: 5
@@ -739,40 +741,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &555615207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 555615199}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b7492eeca99b1346a1430efe0e0983f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerSpeed: 2
-  jumpHeight: 50
-  gravityValue: -9.81
-  gameInput: {fileID: 555615204}
---- !u!114 &555615208
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 555615199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 213c76c62485d5841afebb38482d9783, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _vcam: {fileID: 0}
-  _playerMediator: {fileID: 555615205}
-  RotationSpeed: 1
-  CinemachineCameraTarget: {fileID: 1411400597}
-  TopClamp: 90
-  BottomClamp: -90
 --- !u!1001 &613776673
 PrefabInstance:
   m_ObjectHideFlags: 0
