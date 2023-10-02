@@ -82,6 +82,15 @@ namespace GFA.Case04.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""7e430479-d10f-4346-a6e8-134eab21cf93"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -194,6 +203,17 @@ namespace GFA.Case04.Input
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a6a2fc9-6a35-4225-8bce-d13e69ce1899"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -225,6 +245,7 @@ namespace GFA.Case04.Input
             m_Player_Rolling = m_Player.FindAction("Rolling", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
+            m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -292,6 +313,7 @@ namespace GFA.Case04.Input
         private readonly InputAction m_Player_Rolling;
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_PointerPosition;
+        private readonly InputAction m_Player_Run;
         public struct PlayerActions
         {
             private @GameInput m_Wrapper;
@@ -302,6 +324,7 @@ namespace GFA.Case04.Input
             public InputAction @Rolling => m_Wrapper.m_Player_Rolling;
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
+            public InputAction @Run => m_Wrapper.m_Player_Run;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -329,6 +352,9 @@ namespace GFA.Case04.Input
                 @PointerPosition.started += instance.OnPointerPosition;
                 @PointerPosition.performed += instance.OnPointerPosition;
                 @PointerPosition.canceled += instance.OnPointerPosition;
+                @Run.started += instance.OnRun;
+                @Run.performed += instance.OnRun;
+                @Run.canceled += instance.OnRun;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -351,6 +377,9 @@ namespace GFA.Case04.Input
                 @PointerPosition.started -= instance.OnPointerPosition;
                 @PointerPosition.performed -= instance.OnPointerPosition;
                 @PointerPosition.canceled -= instance.OnPointerPosition;
+                @Run.started -= instance.OnRun;
+                @Run.performed -= instance.OnRun;
+                @Run.canceled -= instance.OnRun;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -385,6 +414,7 @@ namespace GFA.Case04.Input
             void OnRolling(InputAction.CallbackContext context);
             void OnLook(InputAction.CallbackContext context);
             void OnPointerPosition(InputAction.CallbackContext context);
+            void OnRun(InputAction.CallbackContext context);
         }
     }
 }

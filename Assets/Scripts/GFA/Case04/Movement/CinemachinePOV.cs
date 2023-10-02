@@ -31,7 +31,7 @@ public class CinemachinePOV:MonoBehaviour
     private float _rotationVelocity;
     private void Awake()
     {
-      Cursor.visible = false;
+        //Cursor.visible = false;
     }
     private void LateUpdate()
     {
@@ -41,8 +41,8 @@ public class CinemachinePOV:MonoBehaviour
             //Don't multiply mouse input by Time.deltaTime
             float deltaTimeMultiplier = 1;
 
-            _cinemachineTargetPitch += _playerMediator.LookPosition.y * RotationSpeed * deltaTimeMultiplier;
-            _rotationVelocity = _playerMediator.LookPosition.x * RotationSpeed * deltaTimeMultiplier;
+            _cinemachineTargetPitch += _playerMediator.LookPosition.x * RotationSpeed * deltaTimeMultiplier;
+            _rotationVelocity = _playerMediator.LookPosition.y * RotationSpeed * deltaTimeMultiplier;
 
             // clamp our pitch rotation
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
@@ -78,6 +78,43 @@ public class CinemachinePOV:MonoBehaviour
     //            startingRotation.y += deltaInput.y *HorizontalSpeed* Time.deltaTime;
     //            startingRotation.y = Mathf.Clamp(startingRotation.y,-clambAngle,clambAngle);
     //            state.RawOrientation = Quaternion.Euler(startingRotation.y,startingRotation.x,0f);
+    //        }
+    //    }
+    //}
+
+
+    //[SerializeField]
+    //private float horizontalSpeed = 10f;
+
+    //[SerializeField]
+    //private float verticalSpeed = 10f;
+
+    //[SerializeField]
+    //private float clampAngle = 80f;
+
+    //private InputManager inputManager;
+    //private Vector3 startingRotation;
+
+    //protected override void Awake()
+    //{
+    //    inputManager = InputManager.Instance;
+    //    base.Awake();
+    //}
+    //protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam, CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
+    //{
+    //    if (vcam.Follow)
+    //    {
+    //        if (stage == CinemachineCore.Stage.Aim)
+    //        {
+    //            if (startingRotation == null)
+    //            {
+    //                startingRotation = transform.localRotation.eulerAngles;
+    //            }
+    //            Vector2 deltaInput = inputManager.GetMouseDelta();
+    //            startingRotation.x += deltaInput.x * verticalSpeed * Time.deltaTime;
+    //            startingRotation.y += deltaInput.y * horizontalSpeed * Time.deltaTime;
+    //            startingRotation.y = Mathf.Clamp(startingRotation.y, -clampAngle, clampAngle);
+    //            state.RawOrientation = Quaternion.Euler(-startingRotation.y, startingRotation.x, 0f);
     //        }
     //    }
     //}

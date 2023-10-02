@@ -1,149 +1,142 @@
+using Cinemachine;
 using GFA.Case04.Input;
 using GFA.Case04.Mediators;
 using GFA.Case04.Movement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.Windows;
 
 namespace GFA.Case04.Movement
 {
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
+        [SerializeField] private PlayerMediator _playerMediator;
         [SerializeField]
-        private float playerSpeed = 2.0f;
+        private float playerSpeed = 0.2f;
+        [SerializeField]
+        private Vector3 _direction;
         [SerializeField]
         private float jumpHeight = 1.0f;
         [SerializeField]
         private float gravityValue = -9.81f;
-        [SerializeField] private PlayerMediator _playerMediator;
         private CharacterController _characterController;
         private Vector3 _playerVelocity;
         private bool _groundedPlayer;
+        private Transform cameraTransform;
+        private Vector3 move;
+        private float xRotation = 0;
+        [SerializeField] CinemachineVirtualCamera _camera;
+        public bool canMove = true;
+
+
+        public float walkSpeed = 6f;
+        public float runSpeed = 12f;
+        public float jumpPower = 7f;
+        public float gravity = 10f;
+
+
+        public float lookSpeed = 2f;
+        public float lookXLimit = 45f;
+        float rotationX = 0;
+
+
+        Vector3 moveDirection = Vector3.zero;
         private void Awake()
         {
-            //_characterController = GetComponent<CharacterController>();
+            cameraTransform = Camera.main.transform;
+            _characterController = GetComponent<CharacterController>();
         }
         private void Start()
         {
-            _characterController = GetComponent<CharacterController>();
+            //_characterController = GetComponent<CharacterController>();
         }
         public void MoveHandle()
         {
-            Debug.Log("Magnitude"+_playerMediator.LookPosition.magnitude);
-            Debug.Log("Normalized" + _playerMediator.LookPosition.normalized);
-            _characterController.Move(_playerMediator.LookPosition.magnitude * Time.deltaTime * _playerMediator.Movement);
-
-
-
-
-
-            //_groundedPlayer = _characterController.isGrounded;
-            //if (_groundedPlayer && _playerVelocity.y < 0)
+            //_playerMediator.IsGrounded = _characterController.isGrounded;
+            //var gamepadLookDir = _playerMediator.LookPosition;
+            //if (gamepadLookDir != Vector2.zero)
             //{
-            //    _playerVelocity.y = 0f;
+            //    transform.Rotate(Vector3.up * gamepadLookDir.x * Time.deltaTime);
             //}
-
-            //_characterController.Move(_playerMediator.Movement * Time.deltaTime * playerSpeed);
-            ////Rotate
+            //Vector3 inputDirection = new Vector3(_playerMediator.Movement.x, 0.0f, _playerMediator.Movement.y).normalized;
             //if (_playerMediator.Movement != Vector3.zero)
             //{
-            //    //transform.Rotate(_playerMediator.LookPosition);
-            //    gameObject.transform.forward = _playerMediator.Movement;
-
+            //    // move
+            //    inputDirection = transform.right * _playerMediator.Movement.x + transform.forward * _playerMediator.Movement.z;
             //}
-
-            //// Jump
-            //if (_playerMediator.IsJumped && _groundedPlayer)
+            //#region Handles Jumping
+            //if (_playerMediator.IsJumped && canMove && _characterController.isGrounded)
             //{
-            //    _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            //    moveDirection.y = jumpPower;
             //}
-
-            //_playerVelocity.y += gravityValue * Time.deltaTime;
-            //_characterController.Move(_playerMediator.Movement * Time.deltaTime);
-
-            ////Crouch
-            //if (_playerMediator.IsCrouch)
+            //else
             //{
-
+            //    moveDirection.y = movementDirectionY;
             //}
+
+            //if (!characterController.isGrounded)
+            //{
+            //    moveDirection.y -= gravity * Time.deltaTime;
+            //}
+            //_characterController.Move(inputDirection.normalized * (playerSpeed * Time.deltaTime) + new Vector3(0.0f, _playerVelocity.y, 0.0f) * Time.deltaTime);
+  
+
         }
+        private void Update()
+        {
+            #region Handles Movment
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 right = transform.TransformDirection(Vector3.right);
 
+            // Press Left Shift to run
+            bool isRunning = _playerMediator.IsRun;
+            float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * _playerMediator.Movement.x : 0;
+            float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * _playerMediator.Movement.x : 0;
+            float movementDirectionY = moveDirection.y;
+            moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
+            #endregion
 
+            #region Handles Jumping
+            if (_playerMediator.IsJumped && canMove && _characterController.isGrounded)
+            {
+                moveDirection.y = jumpPower;
+            }
+            else
+            {
+                moveDirection.y = movementDirectionY;
+            }
+
+            if (!_characterController.isGrounded)
+            {
+                _playerMediator.IsJumped = false;
+                moveDirection.y -= gravity * Time.deltaTime;
+            }
+
+            #endregion
+
+            #region Handles Rotation
+            _characterController.Move(moveDirection * Time.deltaTime);
+
+            if (canMove)
+            {
+                rotationX += -_playerMediator.LookPosition.y * lookSpeed;
+                rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+                cameraTransform.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+                transform.rotation *= Quaternion.Euler(0, _playerMediator.LookPosition.x * lookSpeed, 0);
+            }
+
+            #endregion  
+        }
     }
 }
-//[Header("Character Input Values")]
-//public Vector2 move;
-//public Vector2 look;
-//public bool jump;
-//public bool sprint;
-
-//[Header("Movement Settings")]
-//public bool analogMovement;
-
-//[Header("Mouse Cursor Settings")]
-//public bool cursorLocked = true;
-//public bool cursorInputForLook = true;
-
-//#if ENABLE_INPUT_SYSTEM
-//public void OnMove(InputValue value)
-//{
-//    MoveInput(value.Get<Vector2>());
-//}
-
-//public void OnLook(InputValue value)
-//{
-//    if (cursorInputForLook)
-//    {
-//        LookInput(value.Get<Vector2>());
-//    }
-//}
-
-//public void OnJump(InputValue value)
-//{
-//    JumpInput(value.isPressed);
-//}
-
-//public void OnSprint(InputValue value)
-//{
-//    SprintInput(value.isPressed);
-//}
-//#endif
-
-
-//public void MoveInput(Vector2 newMoveDirection)
-//{
-//    move = newMoveDirection;
-//}
-
-//public void LookInput(Vector2 newLookDirection)
-//{
-//    look = newLookDirection;
-//}
-
-//public void JumpInput(bool newJumpState)
-//{
-//    jump = newJumpState;
-//}
-
-//public void SprintInput(bool newSprintState)
-//{
-//    sprint = newSprintState;
-//}
-
-//private void OnApplicationFocus(bool hasFocus)
-//{
-//    SetCursorState(cursorLocked);
-//}
-
-//private void SetCursorState(bool newState)
-//{
-//    Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-//}
 
 

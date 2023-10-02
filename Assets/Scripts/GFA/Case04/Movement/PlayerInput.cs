@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace GFA.Case04.Movement
 {
@@ -11,9 +12,11 @@ namespace GFA.Case04.Movement
     {
         public GameInput _gameInput;
         private Vector2 _position;
-        //private float _jumpForce;
-        [SerializeField] private PlayerMediator _playerMediator;
-        //int _crouchCount = 0;
+        //[SerializeField] private PlayerMediator _playerMediator;
+        [SerializeField] private Vector2 _look;
+        [SerializeField] private Vector3 _move;
+        [SerializeField] private bool _isJump;
+        [SerializeField] private bool _isRun;
         private void Awake()
         {
             _gameInput = new GameInput();
@@ -22,30 +25,42 @@ namespace GFA.Case04.Movement
         {
             _gameInput.Enable();
             _gameInput.Player.Jump.performed += OnJump;
+            _gameInput.Player.Look.performed += OnLook;
             _gameInput.Player.Crouch.Enable();
         }
         private void OnDisable()
         {
             _gameInput.Disable();
             _gameInput.Player.Jump.performed -= OnJump;
+            _gameInput.Player.Look.performed -= OnLook;
             _gameInput.Player.Crouch.Disable();
         }
 
         private void OnJump(InputAction.CallbackContext context)
         {
-            //_playerMediator.Behaviour = MoveBehaviour.Jump;
-            //_playerMediator.IsJumped = true;
+            _isJump = context.action.triggered;
+        }
+
+        private void OnLook(InputAction.CallbackContext context)
+        {
+            _look = Vector2.zero;
+            _look = context.ReadValue<Vector2>();
         }
 
         public void OnMove()
         {
 
             _position = _gameInput.Player.Movement.ReadValue<Vector2>();
-            _playerMediator.Movement = new Vector3(_position.x, 0, _position.y);
+            _move = new Vector3(_position.x, 0, _position.y);
 
+        }
+        public void OnRun(InputAction.CallbackContext context)
+        {
+            _isRun=context.action.triggered;
         }
         private void Update()
         {
+            Debug.Log(_look);
             //CrouchHandle();
             //_playerMediator.IsCrouch = _gameInput.Player.Crouch.triggered;
             //Debug.Log(_playerMediator.Movement);
@@ -70,20 +85,22 @@ namespace GFA.Case04.Movement
             //    //_playerMediator.IsCrouch = false;
             //}
         }
-
+        public bool GetPlayerRun()
+        {
+            return _isRun;
+        }
         public Vector3 GetPlayerMovement()
         {
-            _position = _gameInput.Player.Movement.ReadValue<Vector2>();
-            Vector3 move = new Vector3(_position.x, 0, _position.y);
-            return move;
+            OnMove();
+            return _move;
         }
         public Vector2 GetMouseDelta()
         {
-            return _gameInput.Player.Look.ReadValue<Vector2>();
+            return _look;
         }
         public bool PlayerJumpedThisFrame()
         {
-            return _gameInput.Player.Jump.triggered;
+            return _isJump;
         }
 
     }
