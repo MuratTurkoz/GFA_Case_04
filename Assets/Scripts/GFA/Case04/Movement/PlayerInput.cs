@@ -26,6 +26,7 @@ namespace GFA.Case04.Movement
             _gameInput.Enable();
             _gameInput.Player.Jump.performed += OnJump;
             _gameInput.Player.Look.performed += OnLook;
+            _gameInput.Player.Run.performed += OnRun;
             _gameInput.Player.Crouch.Enable();
         }
         private void OnDisable()
@@ -33,6 +34,7 @@ namespace GFA.Case04.Movement
             _gameInput.Disable();
             _gameInput.Player.Jump.performed -= OnJump;
             _gameInput.Player.Look.performed -= OnLook;
+            _gameInput.Player.Run.performed -= OnRun;
             _gameInput.Player.Crouch.Disable();
         }
 
@@ -51,21 +53,18 @@ namespace GFA.Case04.Movement
         {
 
             _position = _gameInput.Player.Movement.ReadValue<Vector2>();
-            _move = new Vector3(_position.x, 0, _position.y);
+            //_move = new Vector3(_position.x, 0, _position.y);
 
         }
         public void OnRun(InputAction.CallbackContext context)
         {
-            _isRun=context.action.triggered;
+            _isRun = false;
+            _isRun =context.action.triggered;
+            Debug.Log(_isRun);
         }
-        private void Update()
+        public void SetJump()
         {
-            Debug.Log(_look);
-            //CrouchHandle();
-            //_playerMediator.IsCrouch = _gameInput.Player.Crouch.triggered;
-            //Debug.Log(_playerMediator.Movement);
-            //OnMove();
-            //_playerMediator.IsCrouch = false;
+            _isJump = false;
         }
         void CrouchHandle()
         {
@@ -87,12 +86,13 @@ namespace GFA.Case04.Movement
         }
         public bool GetPlayerRun()
         {
+       
             return _isRun;
         }
-        public Vector3 GetPlayerMovement()
+        public Vector2 GetPlayerMovement()
         {
-            OnMove();
-            return _move;
+            //OnMove();
+            return _gameInput.Player.Movement.ReadValue<Vector2>();
         }
         public Vector2 GetMouseDelta()
         {
