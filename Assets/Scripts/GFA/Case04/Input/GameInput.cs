@@ -163,7 +163,7 @@ namespace GFA.Case04.Input
                 {
                     ""name"": """",
                     ""id"": ""04c736d9-d6fa-4743-a115-b37c1db8942d"",
-                    ""path"": ""<Keyboard>/shift"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -174,7 +174,7 @@ namespace GFA.Case04.Input
                 {
                     ""name"": """",
                     ""id"": ""4f3fac13-c767-4272-98d4-c8c74d12a5d2"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

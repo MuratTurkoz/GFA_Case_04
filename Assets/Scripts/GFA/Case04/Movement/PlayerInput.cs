@@ -17,6 +17,8 @@ namespace GFA.Case04.Movement
         [SerializeField] private Vector3 _move;
         [SerializeField] private bool _isJump;
         [SerializeField] private bool _isRun;
+        [SerializeField] private bool _isCrouch;
+        [SerializeField] private bool _isRoll;
         private void Awake()
         {
             _gameInput = new GameInput();
@@ -27,7 +29,9 @@ namespace GFA.Case04.Movement
             _gameInput.Player.Jump.performed += OnJump;
             _gameInput.Player.Look.performed += OnLook;
             _gameInput.Player.Run.performed += OnRun;
-            _gameInput.Player.Crouch.Enable();
+            _gameInput.Player.Crouch.performed += OnCrouch;
+            _gameInput.Player.Rolling.performed += OnRoll;
+            //_gameInput.Player.Crouch.Enable();
         }
         private void OnDisable()
         {
@@ -35,7 +39,26 @@ namespace GFA.Case04.Movement
             _gameInput.Player.Jump.performed -= OnJump;
             _gameInput.Player.Look.performed -= OnLook;
             _gameInput.Player.Run.performed -= OnRun;
-            _gameInput.Player.Crouch.Disable();
+            _gameInput.Player.Crouch.performed -= OnCrouch;
+            _gameInput.Player.Rolling.performed -= OnRoll;
+            //_gameInput.Player.Crouch.Disable();
+        }
+        private void Update()
+        {
+            SetCrouch();
+            SetIsRun();
+            SetJump();
+            SetRoll();
+
+        }
+        private void OnRoll(InputAction.CallbackContext context)
+        {
+            _isRoll = context.action.triggered;
+        }
+
+        private void OnCrouch(InputAction.CallbackContext context)
+        {
+            _isCrouch = context.action.triggered;
         }
 
         private void OnJump(InputAction.CallbackContext context)
@@ -51,42 +74,22 @@ namespace GFA.Case04.Movement
 
         public void OnMove()
         {
-
             _position = _gameInput.Player.Movement.ReadValue<Vector2>();
-            //_move = new Vector3(_position.x, 0, _position.y);
-
         }
         public void OnRun(InputAction.CallbackContext context)
         {
-            _isRun = false;
-            _isRun =context.action.triggered;
-            Debug.Log(_isRun);
+            _isRun = context.action.triggered;
         }
-        public void SetJump()
+        private void SetJump()
         {
-            _isJump = false;
+            _isJump = _gameInput.Player.Jump.IsPressed();
         }
-        void CrouchHandle()
+        private void SetIsRun()
         {
-            //_playerMediator.IsCrouch = _gameInput.Player.Crouch.triggered;
-            //if (_gameInput.Player.Crouch.triggered == true)
-            //{
-            //    _crouchCount++;
-            //    Debug.Log(_crouchCount);
-
-            //}
-            //if (_crouchCount % 2 == 0)
-            //{
-            //    //_playerMediator.IsCrouch = true;
-            //}
-            //else
-            //{
-            //    //_playerMediator.IsCrouch = false;
-            //}
+            _isRun = _gameInput.Player.Run.IsPressed();
         }
         public bool GetPlayerRun()
         {
-       
             return _isRun;
         }
         public Vector2 GetPlayerMovement()
@@ -101,6 +104,22 @@ namespace GFA.Case04.Movement
         public bool PlayerJumpedThisFrame()
         {
             return _isJump;
+        }
+        public bool GetCrouchValue()
+        {
+            return _isCrouch;
+        }
+        public bool GetRollValue()
+        {
+            return _isRoll;
+        }
+        private void SetCrouch()
+        {
+            _isCrouch = _gameInput.Player.Crouch.IsPressed();
+        }
+        private void SetRoll()
+        {
+            _isRoll = _gameInput.Player.Rolling.IsPressed();
         }
 
     }
