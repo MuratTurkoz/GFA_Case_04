@@ -1,6 +1,6 @@
 using GFA.Case04.Input;
 using GFA.Case04.Movement;
-using StarterAssets;
+//using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.NCalc;
@@ -21,8 +21,8 @@ namespace GFA.Case04.Mediators
         private float _rotation;
         public float Rotation { get { return _rotation; } set { _rotation = value; } }
         [SerializeField]
-        private Vector3 _movement;
-        public Vector3 Movement { get { return _movement; } set { _movement = value; } }
+        private Vector2 _movement;
+        public Vector2 Movement { get { return _movement; } set { _movement = value; } }
 
         private bool _isCrouch;
         public bool IsCrouch { get { return _isCrouch; } set { _isCrouch = value; } }
@@ -56,44 +56,42 @@ namespace GFA.Case04.Mediators
 
         private void Update()
         {
-            OnMove();
             OnJumped();
             OnRun();
             OnCrouch();
             OnRoll();
+            OnMove();
+            Debug.Log(Movement);
+
         }
         private void FixedUpdate()
         {
 
 
         }
-
-        private void LateUpdate()
-        {
-
-        }
         private void OnRoll()
         {
             IsRolled = _playerInput.GetRollValue();
             _animPlayer.SetBool("IsRoll", IsRolled);
-            _animCam.SetBool("IsCrouch", IsRolled);
             if (IsRolled)
             {
-                _playerController.CharacterControllerOld.height = 1.1f;
-                _playerController.CharacterControllerOld.center = new Vector3(0, 0.5f, 0);
+                //_animCam.Play("Crouch");
+                //_playerController.CharacterControllerOld.height = 1f;
+                //_playerController.CharacterControllerOld.center = new Vector3(0, 0.5f, 0);
 
             }
             else
             {
-                _playerController.CharacterControllerOld.height = 1.5f;
-                _playerController.CharacterControllerOld.center = new Vector3(0, 0.8f, 0);
+                //_animCam.Play("Run");
+                //_playerController.CharacterControllerOld.height = 2f;
+                //_playerController.CharacterControllerOld.center = new Vector3(0, 1, 0);
             }
         }
 
 
         private void OnMove()
         {
-            Movement = _playerInput.GetPlayerMovement();
+          Movement= _playerInput.GetPlayerMovement();
             _playerController.MoveHandle();
             _animPlayer.SetFloat("MoveZ", _movement.normalized.magnitude);
 
@@ -111,21 +109,22 @@ namespace GFA.Case04.Mediators
         private void OnCrouch()
         {
             IsCrouch = _playerInput.GetCrouchValue();
-            _animPlayer.SetBool("IsCrouch", IsCrouch);
-            _animCam.SetBool("IsCrouch", IsCrouch);
+                _animPlayer.SetBool("IsCrouch", IsCrouch);
             if (IsCrouch)
             {
-                _playerController.CharacterControllerOld.height = 1.1f;
+                _playerController.CharacterControllerOld.height = 1f;
                 _playerController.CharacterControllerOld.center = new Vector3(0, 0.5f, 0);
+                _animCam.Play("Crouch");
 
             }
             else
             {
-                _playerController.CharacterControllerOld.height = 1.5f;
-                _playerController.CharacterControllerOld.center = new Vector3(0, 0.8f, 0);
+                _playerController.CharacterControllerOld.height = 2f;
+                _playerController.CharacterControllerOld.center = new Vector3(0, 1, 0);
+                _animCam.Play("Idle");
             }
 
-         
+
         }
 
 

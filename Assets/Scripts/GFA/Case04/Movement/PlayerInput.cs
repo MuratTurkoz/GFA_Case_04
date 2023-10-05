@@ -19,6 +19,7 @@ namespace GFA.Case04.Movement
         [SerializeField] private bool _isRun;
         [SerializeField] private bool _isCrouch;
         [SerializeField] private bool _isRoll;
+        int count = 0;
         private void Awake()
         {
             _gameInput = new GameInput();
@@ -80,14 +81,7 @@ namespace GFA.Case04.Movement
         {
             _isRun = context.action.triggered;
         }
-        private void SetJump()
-        {
-            _isJump = _gameInput.Player.Jump.IsPressed();
-        }
-        private void SetIsRun()
-        {
-            _isRun = _gameInput.Player.Run.IsPressed();
-        }
+
         public bool GetPlayerRun()
         {
             return _isRun;
@@ -107,7 +101,9 @@ namespace GFA.Case04.Movement
         }
         public bool GetCrouchValue()
         {
-            return _isCrouch;
+                return _isCrouch;
+          
+
         }
         public bool GetRollValue()
         {
@@ -115,11 +111,21 @@ namespace GFA.Case04.Movement
         }
         private void SetCrouch()
         {
+            
             _isCrouch = _gameInput.Player.Crouch.IsPressed();
+        
         }
         private void SetRoll()
         {
             _isRoll = _gameInput.Player.Rolling.IsPressed();
+        }
+        private void SetJump()
+        {
+            _isJump = _gameInput.Player.Jump.IsPressed();
+        }
+        private void SetIsRun()
+        {
+            _isRun = _gameInput.Player.Run.IsPressed();
         }
 
     }
